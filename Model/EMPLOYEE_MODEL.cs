@@ -12,7 +12,7 @@ namespace HR_PROJECT.Model
         public string LAST_NAME { get; set; }
         public string EMAIL { get; set; }
         public string  PHONE_NUMBER { get; set; }
-        public DateTime? HIRE_DATE { get; set; }
+        public DateTime HIRE_DATE { get; set; }
         public string JOB_ID { get; set; }
         public  decimal? SALARY { get; set; }
         public decimal? COMMISION_PCT { get; set; }
