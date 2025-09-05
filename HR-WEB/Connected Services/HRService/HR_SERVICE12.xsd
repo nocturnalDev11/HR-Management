@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/HR_PROJECT.Model" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/HR_PROJECT.Model" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="ArrayOfEMPLOYEE_MODEL">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="EMPLOYEE_MODEL" nillable="true" type="tns:EMPLOYEE_MODEL" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfEMPLOYEE_MODEL" nillable="true" type="tns:ArrayOfEMPLOYEE_MODEL" />
+  <xs:complexType name="EMPLOYEE_MODEL">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="COMMISION_PCT" nillable="true" type="xs:decimal" />
+      <xs:element minOccurs="0" name="DEPARTMENT_ID" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="EMAIL" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="EMPLOYEE_ID" type="xs:int" />
+      <xs:element minOccurs="0" name="FIRST_NAME" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="HIRE_DATE" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="JOB_ID" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="LAST_NAME" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MANAGER_ID" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="PHONE_NUMBER" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SALARY" nillable="true" type="xs:decimal" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="EMPLOYEE_MODEL" nillable="true" type="tns:EMPLOYEE_MODEL" />
+</xs:schema>

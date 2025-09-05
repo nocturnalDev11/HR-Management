@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="e110d241-df96-4fca-8afb-8e2f2fe89cdc" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://192.168.2.189/HR_LUTZ/HR_SERVICE1.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="HR_SERVICE1.xsd" MetadataType="Schema" ID="26c8aa5d-da57-4a61-a398-c27a23ca7213" SourceId="1" SourceUrl="http://192.168.2.189/HR_LUTZ/HR_SERVICE1.svc?xsd=xsd0" />
+    <MetadataFile FileName="HR_SERVICE1.disco" MetadataType="Disco" ID="91a2eaa9-9b45-41e2-b6c0-f783f43e1aa5" SourceId="1" SourceUrl="http://192.168.2.189/HR_LUTZ/HR_SERVICE1.svc?disco" />
+    <MetadataFile FileName="HR_SERVICE11.xsd" MetadataType="Schema" ID="7254519c-8d2d-4cd7-9d16-0815c0689dd9" SourceId="1" SourceUrl="http://192.168.2.189/HR_LUTZ/HR_SERVICE1.svc?xsd=xsd1" />
+    <MetadataFile FileName="HR_SERVICE12.xsd" MetadataType="Schema" ID="a852f6db-fe0e-4c34-b1f9-667e695da35b" SourceId="1" SourceUrl="http://192.168.2.189/HR_LUTZ/HR_SERVICE1.svc?xsd=xsd2" />
+    <MetadataFile FileName="HR_SERVICE1.wsdl" MetadataType="Wsdl" ID="e40450c6-4019-4506-b58d-34e9d24c2656" SourceId="1" SourceUrl="http://192.168.2.189/HR_LUTZ/HR_SERVICE1.svc?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

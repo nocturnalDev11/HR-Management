@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<discovery xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.xmlsoap.org/disco/">
+  <contractRef ref="http://192.168.2.189/HR_LUTZ/HR_SERVICE1.svc?wsdl" docRef="http://192.168.2.189/HR_LUTZ/HR_SERVICE1.svc" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
+</discovery>
