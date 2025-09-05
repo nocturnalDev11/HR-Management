@@ -1,0 +1,79 @@
+﻿@model HR_WEB.HRService.EMPLOYEE_MODEL
+
+<div class="modal fade" id="updateEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="updateEmployeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="updateEmployeeModalLabel">Update Employee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("UpdateEmployee", "Employees", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.EMPLOYEE_ID)
+
+                    <div class="row mb-2">
+                        <div class="col">
+                            @Html.LabelFor(m => m.FIRST_NAME)
+                            @Html.TextBoxFor(m => m.FIRST_NAME, new { @class = "form-control" })
+                        </div>
+                        <div class="col">
+                            @Html.LabelFor(m => m.LAST_NAME)
+                            @Html.TextBoxFor(m => m.LAST_NAME, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col">
+                            @Html.LabelFor(m => m.EMAIL)
+                            @Html.TextBoxFor(m => m.EMAIL, new { @class = "form-control" })
+                        </div>
+                        <div class="col">
+                            @Html.LabelFor(m => m.PHONE_NUMBER)
+                            @Html.TextBoxFor(m => m.PHONE_NUMBER, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col">
+                            @Html.LabelFor(m => m.HIRE_DATE)
+                            @Html.TextBoxFor(m => m.HIRE_DATE, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                        </div>
+                        <div class="col">
+                            @Html.LabelFor(m => m.JOB_ID)
+                            @Html.TextBoxFor(m => m.JOB_ID, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col">
+                            @Html.LabelFor(m => m.SALARY)
+                            @Html.TextBoxFor(m => m.SALARY, new { @class = "form-control", type = "number", step = "0.01" })
+                        </div>
+                        <div class="col">
+                            @Html.LabelFor(m => m.COMMISION_PCT)
+                            @Html.TextBoxFor(m => m.COMMISION_PCT, new { @class = "form-control", type = "number", step = "0.01" })
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col">
+                            @Html.LabelFor(m => m.MANAGER_ID)
+                            @Html.TextBoxFor(m => m.MANAGER_ID, new { @class = "form-control", type = "number" })
+                        </div>
+                        <div class="col">
+                            @Html.LabelFor(m => m.DEPARTMENT_ID)
+                            @Html.TextBoxFor(m => m.DEPARTMENT_ID, new { @class = "form-control", type = "number" })
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

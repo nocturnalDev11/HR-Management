@@ -1,0 +1,41 @@
+﻿@model HR_WEB.HRService.EMPLOYEE_MODEL
+
+<div class="modal fade" id="deleteEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="deleteEmployeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form action="@Url.Action("DeleteEmployee", "Employees")" method="post">
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.EMPLOYEE_ID)
+
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteEmployeeModalLabel">Delete Employee</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body text-center">
+                    <p class="fs-5">Are you sure you want to delete the employee:</p>
+                    <h4 class="fw-bold">@Model.FIRST_NAME @Model.LAST_NAME</h4>
+                    <p class="text-muted">This action cannot be undone.</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function openDeleteModal(employeeId) {
+    $.get('@Url.Action("DeleteEmployee", "Employees")', { id: employeeId }, function (data) {
+        $('body').append(data);
+        var modal = new bootstrap.Modal(document.getElementById('deleteEmployeeModal'));
+        modal.show();
+        $('#deleteEmployeeModal').on('hidden.bs.modal', function () {
+            $(this).remove();
+        });
+    });
+}
+</script>

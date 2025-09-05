@@ -1,0 +1,29 @@
+﻿@{
+    var message = TempData["Message"] as string;
+    var isSuccess = !string.IsNullOrEmpty(message) && message.Contains("successfully");
+    var toastClass = isSuccess ? "bg-success text-white" : "bg-danger text-white";
+    var icon = isSuccess ? "bi-check-circle-fill" : "bi-exclamation-triangle-fill";
+}
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+        <div id="appToast" class="toast align-items-center @toastClass border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi @icon me-2"></i> @message
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var toastEl = document.getElementById('appToast');
+            var toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+            toast.show();
+        });
+    </script>
+}
+

@@ -1,0 +1,314 @@
+﻿@{
+    ViewBag.Title = "Employee Management";
+}
+
+<main class="container py-5">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 fw-bold text-dark"><i class="bi bi-people-fill me-2"></i>Employee Management</h1>
+        <button class="btn btn-success btn-lg shadow-sm" onclick="openInsertModal()">
+            <i class="bi bi-person-plus-fill me-2"></i>Add Employee
+        </button>
+    </div>
+
+    <!-- Search and Filter Card -->
+    <div class="card shadow border-0 mb-4">
+        <div class="card-body">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                        <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Search by name, email, or phone" aria-label="Search employees">
+                    </div>
+                </div>
+                <div class="col-md-3 col-lg-3">
+                    <select id="sortSelect" class="form-select shadow-sm">
+                        <option value="EMPLOYEE_ID">Sort by ID</option>
+                        <option value="FIRST_NAME">Sort by First Name</option>
+                        <option value="LAST_NAME">Sort by Last Name</option>
+                        <option value="SALARY">Sort by Salary</option>
+                    </select>
+                </div>
+                <div class="col-md-3 col-lg-2">
+                    <select id="pageSizeSelect" class="form-select shadow-sm">
+                        <option value="10">10 per page</option>
+                        <option value="25">25 per page</option>
+                        <option value="50">50 per page</option>
+                    </select>
+                </div>
+                <div class="col-md-3 col-lg-2">
+                    <button id="btnLoad" class="btn btn-primary w-100 shadow-sm">
+                        <i class="bi bi-arrow-repeat me-2"></i>Load
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Table -->
+    <div class="card shadow border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table id="employeeTable" class="table table-hover table-striped align-middle mb-0">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">First Name</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Phone</th>
+                            <th scope="col">Hire Date</th>
+                            <th scope="col">Job ID</th>  
+                            <th scope="col">Salary</th>
+                            <th scope="col">Commission</th>
+                            <th scope="col">Manager</th>
+                            <th scope="col">Department</th>
+                            <th scope="col" class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Pagination -->
+        <div class="card-footer bg-light border-0 d-flex justify-content-between align-items-center">
+            <div id="tableInfo" class="text-muted small"></div>
+            <nav aria-label="Employee pagination">
+                <ul id="pagination" class="pagination mb-0"></ul>
+            </nav>
+        </div>
+    </div>
+</main>
+
+@section scripts {
+    <script>
+        let employees = [];
+        let filteredEmployees = [];
+        let currentPage = 1;
+        let pageSize = 10;
+
+        function renderTable() {
+            const tbody = $("#employeeTable tbody");
+            tbody.empty();
+
+            const start = (currentPage - 1) * pageSize;
+            const end = start + pageSize;
+            const pageData = filteredEmployees.slice(start, end);
+
+            if (pageData.length === 0) {
+                tbody.append(`
+                    <tr>
+                        <td colspan="12" class="text-center text-muted py-5">
+                            <i class="bi bi-exclamation-circle me-2"></i>No employees found
+                        </td>
+                    </tr>
+                `);
+                $("#tableInfo").text("No employees to display");
+                renderPagination();
+                return;
+            }
+
+            $.each(pageData, function (i, emp) {
+                tbody.append(`
+                    <tr>
+                        <td>${emp.EMPLOYEE_ID}</td>
+                        <td>${emp.FIRST_NAME || ''}</td>
+                        <td>${emp.LAST_NAME || ''}</td>
+                        <td><a href="mailto:${emp.EMAIL || ''}" class="text-decoration-none">${emp.EMAIL || ''}</a></td>
+                        <td>${emp.PHONE_NUMBER || ''}</td>
+                        <td>${
+                            emp.HIRE_DATE
+                            ? new Date(parseInt(emp.HIRE_DATE.replace(/\/Date\((\d+)\)\//, "$1"))).toLocaleDateString("en-US", {
+                                year: 'numeric', month: 'short', day: 'numeric'
+                            })
+                            : ''
+                        }</td>
+                        <td>${emp.JOB_ID || ''}</td>
+                        <td>${Number(emp.SALARY).toLocaleString() || ''}</td>
+                        <td>${emp.COMMISSION_PCT ? (emp.COMMISSION_PCT * 100).toFixed(2) + '%' : ''}</td>
+                        <td>${emp.MANAGER_ID || ''}</td>
+                        <td>${emp.DEPARTMENT_ID || ''}</td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-sm btn-outline-primary" onclick="openUpdateModal(${emp.EMPLOYEE_ID})" title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="openDeleteModal(${emp.EMPLOYEE_ID})" title="Delete">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `);
+            });
+
+            const totalRecords = filteredEmployees.length;
+            const showingStart = start + 1;
+            const showingEnd = Math.min(end, totalRecords);
+            $("#tableInfo").text(`Showing ${showingStart} to ${showingEnd} of ${totalRecords} employees`);
+
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredEmployees.length / pageSize);
+            const pagination = $("#pagination");
+            pagination.empty();
+
+            if (totalPages <= 1) {
+                pagination.append('<li class="page-item disabled"><span class="page-link">1</span></li>');
+                return;
+            }
+
+            // Previous button
+            pagination.append(`
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" data-page="${currentPage - 1}"><i class="bi bi-chevron-left"></i></a>
+                </li>
+            `);
+
+            // Page numbers (show limited range for better UX)
+            const maxPagesToShow = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+            let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+            if (endPage - startPage < maxPagesToShow - 1) {
+                startPage = Math.max(1, endPage - maxPagesToShow + 1);
+            }
+
+            if (startPage > 1) {
+                pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>');
+                if (startPage > 2) pagination.append('<li class="page-item disabled"><span class="page-link">...</span></li>');
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                pagination.append(`
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="#" data-page="${i}">${i}</a>
+                    </li>
+                `);
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) pagination.append('<li class="page-item disabled"><span class="page-link">...</span></li>');
+                pagination.append(`<li class="page-item"><a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a></li>`);
+            }
+
+            // Next button
+            pagination.append(`
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" data-page="${currentPage + 1}"><i class="bi bi-chevron-right"></i></a>
+                </li>
+            `);
+
+            // Page click handler
+            $(".page-link").click(function (e) {
+                e.preventDefault();
+                const page = $(this).data("page");
+                if (page) {
+                    currentPage = page;
+                    renderTable();
+                }
+            });
+        }
+
+        function filterEmployees() {
+            const searchTerm = $("#searchInput").val().toLowerCase();
+            filteredEmployees = employees.filter(emp =>
+                (emp.FIRST_NAME?.toLowerCase().includes(searchTerm) || '') ||
+                (emp.LAST_NAME?.toLowerCase().includes(searchTerm) || '') ||
+                (emp.EMAIL?.toLowerCase().includes(searchTerm) || '') ||
+                (emp.PHONE_NUMBER?.toLowerCase().includes(searchTerm) || '')
+            );
+            currentPage = 1;
+            renderTable();
+        }
+
+        function sortEmployees() {
+            const sortBy = $("#sortSelect").val();
+            filteredEmployees.sort((a, b) => {
+                let valA = a[sortBy] || '';
+                let valB = b[sortBy] || '';
+                if (sortBy === 'SALARY') {
+                    valA = Number(valA) || 0;
+                    valB = Number(valB) || 0;
+                } else {
+                    valA = valA.toString().toLowerCase();
+                    valB = valB.toString().toLowerCase();
+                }
+                return valA > valB ? 1 : valA < valB ? -1 : 0;
+            });
+            renderTable();
+        }
+
+        // Load Employees
+        $("#btnLoad").click(function () {
+            $(this).prop("disabled", true).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...');
+            $.getJSON('@Url.Action("GetAllEmployees", "Home")', function (data) {
+                employees = data;
+                filteredEmployees = [...employees];
+                currentPage = 1;
+                renderTable();
+                $("#btnLoad").prop("disabled", false).html('<i class="bi bi-arrow-repeat me-2"></i>Load');
+            }).fail(function () {
+                $("#btnLoad").prop("disabled", false).html('<i class="bi bi-arrow-repeat me-2"></i>Load');
+                const toast = new bootstrap.Toast($('<div class="toast align-items-center text-white bg-danger border-0 position-fixed bottom-0 end-0 m-3" role="alert" aria-live="assertive" aria-atomic="true"><div class="d-flex"><div class="toast-body"><i class="bi bi-exclamation-triangle-fill me-2"></i>Failed to load employees. Please try again.</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div></div>').appendTo('body'));
+                toast.show();
+            });
+        });
+
+        // Search handler with debounce
+        let searchTimeout;
+        $("#searchInput").on("input", function () {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(filterEmployees, 300);
+        });
+
+        // Sort handler
+        $("#sortSelect").on("change", sortEmployees);
+
+        // Page size handler
+        $("#pageSizeSelect").on("change", function () {
+            pageSize = parseInt($(this).val());
+            currentPage = 1;
+            renderTable();
+        });
+
+        function openInsertModal() {
+            $.get('@Url.Action("InsertEmployee", "Employees")', function (data) {
+                $('body').append(data);
+                var modal = new bootstrap.Modal(document.getElementById('insertEmployeeModal'));
+                modal.show();
+                $('#insertEmployeeModal').on('hidden.bs.modal', function () {
+                    $(this).remove();
+                });
+            });
+        }
+
+        function openDeleteModal(employeeId) {
+            $.get('@Url.Action("DeleteEmployee", "Employees")', { id: employeeId }, function (data) {
+                $('body').append(data);
+                var modal = new bootstrap.Modal(document.getElementById('deleteEmployeeModal'));
+                modal.show();
+                $('#deleteEmployeeModal').on('hidden.bs.modal', function () {
+                    $(this).remove();
+                });
+            });
+        }
+
+        function openUpdateModal(employeeId) {
+            $.get('@Url.Action("UpdateEmployee", "Employees")', { id: employeeId }, function (data) {
+                $('body').append(data);
+                var modal = new bootstrap.Modal(document.getElementById('updateEmployeeModal'));
+                modal.show();
+                $('#updateEmployeeModal').on('hidden.bs.modal', function () {
+                    $(this).remove();
+                });
+            });
+        }
+
+        // Auto-load employees on page load
+        $(document).ready(function () {
+            $("#btnLoad").click();
+        });
+    </script>
+}
